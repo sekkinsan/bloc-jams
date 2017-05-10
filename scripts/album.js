@@ -38,11 +38,11 @@ var albumIU = {
   year: '2017',
   albumArtUrl: 'assets/images/album_covers/11.png',
   songs: [
-    { title: '이 지금', duration: '4:25'},
-    { title: '팔레트', duration: '3:32'},
-    { title: '이런 엔딩', duration: '4:08'},
-    { title: '사랑이 잘', duration: '3:15'},
-    { title: '잼잼', duration: '2:54'}
+    { title: 'Right Now', duration: '4:25'},
+    { title: 'Palette', duration: '3:32'},
+    { title: 'This Ending', duration: '4:08'},
+    { title: 'Good Love', duration: '3:15'},
+    { title: 'Jam Jam', duration: '2:54'}
   ]
 }
 
@@ -64,15 +64,16 @@ when the window loads. It will take one of our album objects as an argument
 and will utilize the object's stored information by injecting it
 into the template. */
 
+/* #1  we select all HTML elements that are required to display on the album
+We want to populate these elements with information, so we assign the
+corresponding values of the album objects' properties to the HTML elements. */
+var albumTitle = document.getElementsByClassName('album-view-title')[0];
+var albumArtist = document.getElementsByClassName('album-view-artist')[0];
+var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
+var albumImage = document.getElementsByClassName('album-cover-art')[0];
+var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+
 var setCurrentAlbum = function(album) {
-  /* #1  we select all HTML elements that are required to display on the album
-  We want to populate these elements with information, so we assign the
-  corresponding values of the album objects' properties to the HTML elements. */
-  var albumTitle = document.getElementsByClassName('album-view-title')[0];
-  var albumArtist = document.getElementsByClassName('album-view-artist')[0];
-  var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
-  var albumImage = document.getElementsByClassName('album-cover-art')[0];
-  var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
   /* #2
   firstChild property identifies the firstchild node of an element, and nodeValue
   returns or sets the value of a node.
@@ -94,23 +95,16 @@ var setCurrentAlbum = function(album) {
     }
 };
 
-var button = document.getElementsByTagName('img')[1];
-console.log(button);
+window.onload = function(){ //we create a function that sets current album to picasso
+  setCurrentAlbum(albumPicasso);
 
-/* trying to make a function so when i click on album image, it will switch to
-the next album */
-
-window.onload = function(){
-    setCurrentAlbum(albumPicasso);
-    button.addEventListener("onclick", function(event));
-
-    if (setCurrentAlbum == albumPicasso) {
-      setCurrentAlbum(albumMarconi)
-    }
-    if (setCurrentAlbum == albumMarconi) {
-      setCurrentAlbum(albumIU)
-    }
-    if (setCurrentAlbum == albumIU) {
-      setCurrentAlbum(albumPicasso)
-    }
+  var albums=[albumPicasso, albumMarconi, albumIU]; //create an array of the albums we want to loop for below event listener for easy access using array indices
+  var index = 1; 
+  albumImage.addEventListener("click",function(event){ //click event on image which will trigger below function
+      setCurrentAlbum(albums[index]); //way to access the array
+      index++; //each time you click it will go to the next array index
+      if (index == albums.length) { //this is for when the third album is reached, when clicked it will reclick to first one.
+        index = 0;
+      }
+  });
 };
