@@ -46,6 +46,8 @@ var albumIU = {
   ]
 }
 
+var currentlyPlayingSong = null;
+
 //Dynamically generating song row content
 var createSongRow = function(songNumber, songName, songLength){
   var template =
@@ -59,10 +61,7 @@ var createSongRow = function(songNumber, songName, songLength){
     return template;
 };
 
-/* creating a function to set the current album that the program calls
-when the window loads. It will take one of our album objects as an argument
-and will utilize the object's stored information by injecting it
-into the template. */
+var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
 
 /* #1  we select all HTML elements that are required to display on the album
 We want to populate these elements with information, so we assign the
@@ -72,6 +71,7 @@ var albumArtist = document.getElementsByClassName('album-view-artist')[0];
 var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
 var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+
 
 var setCurrentAlbum = function(album) {
   /* #2
@@ -95,9 +95,74 @@ var setCurrentAlbum = function(album) {
     }
 };
 
-var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
 var songRows = document.getElementsByClassName('album-view-song-item');
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>'
+var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>'
+
+//........Begin findParentByClassName function (Checkpoint 13)
+
+var findParentByClassName = function(element, targetClass) {
+  if (element) {
+    var currentParent = element.parentElement;
+    while (currentParent.className !== targetClass && currentParent.className !== null){
+        currentParent = currentParent.parentElement;
+    }
+    return currentParent;
+  }
+  //check to see if parent exists (checkpoint 13)
+  else if (currentParent === null) {
+    console.log("No parent found.")
+  }
+  else if (currentParent.className.innerHTML !== "No parent found with that class name."){
+    console.log("No parent found with className?")
+  }
+};
+
+//...........End findParentByClassName function (checkpoint 13)
+
+//............Begin getSongItem function (checkpoint 13)
+
+var getSongItem = function(element){
+  switch (element.className) {
+    case 'album-song-button':
+    case 'ion-play':
+    case 'ion-pause':
+      return findParentByClassName(element, 'song-item-number');
+    case 'album-view-song-item':
+      return element.querySelector('.song-item-number');
+    case 'song-item-title':
+    case 'song-item-duration':
+      return findParentByClassName(element, 'album-view-song-item').querySelector('.song-item-number');
+    case 'song-item-number':
+      return element;
+    default:
+      return;
+  }
+};
+
+//..............End getSongItem function (checkpoint 13)
+
+//..........Adding a clickHandler function (checkpoint 13)
+
+var clickHandler = function(targetElement) {
+  var songItem = getSongItem (targetElement);
+  console.log(songItem);
+
+  if (currentlyPlayingSong === null) {
+    songItem.innerHTML = pauseButtonTemplate;
+    currentlyPlayingSong = songItem.getAttribute('data-song-number');
+    console.log(currentlyPlayingSong);
+  } else if (currentlyPlayingSong === songItem.getAttribute('data-song-number')){
+      songItem.innerHTML = playButtonTemplate;
+      currentlyPlayingSong = null;
+  } else if (currentlyPlayingSong !== songItem.getAttribute('data-song-number')){
+      var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '"]');
+      currentlyPlayingSongElement.innerHTML = currentlyPlayingSongElement.getAttribute('data-song-number');
+      songItem.innerHTML = pauseButtonTemplate;
+      currentlyPlayingSong = songItem.getAttribute('data-song-number');
+  }
+  console.log(currentlyPlayingSong);
+};
 
 window.onload = function(){ //we create a function that sets current album to picasso
   setCurrentAlbum(albumPicasso);
@@ -107,12 +172,35 @@ window.onload = function(){ //we create a function that sets current album to pi
       //change the content from the number to the play button's HTML
       event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
     }
+    //conditional statement that only changes innerHTML of table cell when element does not belong to the currently playing song (checkpoint 13)
+    var songItem = getSongItem(event.target);
+
+    if (songItem.getAttribute('data-song-number') !== currentlyPlayingSong) {
+      songItem.innerHTML = playButtonTemplate
+    }
+    //end conditional statement
   });
 
     for(var i = 0; i < songRows.length; i++){
         songRows[i].addEventListener('mouseleave', function(event){
           //revert the content back to the number
-          this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
+          //this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
+
+          // cached song item that we're leaving in a variable (checkpoint 13)
+          var songItem = getSongItem(event.target);
+          var songItemNumber = songItem.getAttribute('data-song-number');
+          // end caching song item
+
+          //conditional that checks that the item the mouse is leaving is not current song
+          if (songItemNumber !== currentlyPlayingSong) {
+              songItem.innerHTML = songItemNumber;
+          //end conditional (checkpoint 13)
+          }
+        });
+
+        songRows[i].addEventListener('click', function(event) {
+          //Event Handler call checkpoint 13
+          clickHandler(event.target);
         });
     }
 
