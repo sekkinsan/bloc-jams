@@ -72,6 +72,15 @@ var albumReleaseInfo = document.getElementsByClassName('album-view-release-info'
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
 var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
 
+var albums=[albumPicasso, albumMarconi, albumIU]; //create an array of the albums we want to loop for below event listener for easy access using array indices
+var index = 1;
+albumImage.addEventListener("click",function(event){ //click event on image which will trigger below function
+    setCurrentAlbum(albums[index]); //way to access the array
+    index++; //each time you click it will go to the next array index
+    if (index == albums.length) { //this is for when the third album is reached, when clicked it will reclick to first one.
+      index = 0;
+    }
+});
 
 var setCurrentAlbum = function(album) {
   /* #2
@@ -151,7 +160,6 @@ var clickHandler = function(targetElement) {
   if (currentlyPlayingSong === null) {
     songItem.innerHTML = pauseButtonTemplate;
     currentlyPlayingSong = songItem.getAttribute('data-song-number');
-    console.log(currentlyPlayingSong);
   } else if (currentlyPlayingSong === songItem.getAttribute('data-song-number')){
       songItem.innerHTML = playButtonTemplate;
       currentlyPlayingSong = null;
@@ -171,13 +179,13 @@ window.onload = function(){ //we create a function that sets current album to pi
     if(event.target.parentElement.className === 'album-view-song-item'){
       //change the content from the number to the play button's HTML
       event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
-    }
     //conditional statement that only changes innerHTML of table cell when element does not belong to the currently playing song (checkpoint 13)
     var songItem = getSongItem(event.target);
 
     if (songItem.getAttribute('data-song-number') !== currentlyPlayingSong) {
       songItem.innerHTML = playButtonTemplate
     }
+  }
     //end conditional statement
   });
 
@@ -203,14 +211,4 @@ window.onload = function(){ //we create a function that sets current album to pi
           clickHandler(event.target);
         });
     }
-
-  var albums=[albumPicasso, albumMarconi, albumIU]; //create an array of the albums we want to loop for below event listener for easy access using array indices
-  var index = 1;
-  albumImage.addEventListener("click",function(event){ //click event on image which will trigger below function
-      setCurrentAlbum(albums[index]); //way to access the array
-      index++; //each time you click it will go to the next array index
-      if (index == albums.length) { //this is for when the third album is reached, when clicked it will reclick to first one.
-        index = 0;
-      }
-  });
 };
