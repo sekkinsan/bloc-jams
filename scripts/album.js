@@ -154,22 +154,22 @@ var getSongItem = function(element){
 //..........Adding a clickHandler function (checkpoint 13)
 
 var clickHandler = function(targetElement) {
-  var songItem = getSongItem (targetElement);
-  console.log(songItem);
 
-  if (currentlyPlayingSong === null) {
-    songItem.innerHTML = pauseButtonTemplate;
-    currentlyPlayingSong = songItem.getAttribute('data-song-number');
-  } else if (currentlyPlayingSong === songItem.getAttribute('data-song-number')){
-      songItem.innerHTML = playButtonTemplate;
-      currentlyPlayingSong = null;
-  } else if (currentlyPlayingSong !== songItem.getAttribute('data-song-number')){
-      var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '"]');
-      currentlyPlayingSongElement.innerHTML = currentlyPlayingSongElement.getAttribute('data-song-number');
-      songItem.innerHTML = pauseButtonTemplate;
-      currentlyPlayingSong = songItem.getAttribute('data-song-number');
-  }
-  console.log(currentlyPlayingSong);
+     var songItem = getSongItem(targetElement);
+
+     if (currentlyPlayingSong === null) {
+         songItem.innerHTML = pauseButtonTemplate;
+         currentlyPlayingSong = songItem.getAttribute('data-song-number');
+    } else if (currentlyPlayingSong === songItem.getAttribute('data-song-number')) {
+         songItem.innerHTML = playButtonTemplate;
+         currentlyPlayingSong = null;
+    } else if (currentlyPlayingSong !== songItem.getAttribute('data-song-number')) {
+       var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '"]');
+       currentlyPlayingSongElement.innerHTML = currentlyPlayingSongElement.getAttribute('data-song-number');
+       songItem.innerHTML = pauseButtonTemplate;
+       currentlyPlayingSong = songItem.getAttribute('data-song-number');
+   }
+
 };
 
 window.onload = function(){ //we create a function that sets current album to picasso
@@ -178,7 +178,7 @@ window.onload = function(){ //we create a function that sets current album to pi
   songListContainer.addEventListener('mouseover', function(event){
     if(event.target.parentElement.className === 'album-view-song-item'){
       //change the content from the number to the play button's HTML
-      event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
+      //event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
     //conditional statement that only changes innerHTML of table cell when element does not belong to the currently playing song (checkpoint 13)
     var songItem = getSongItem(event.target);
 
@@ -189,22 +189,17 @@ window.onload = function(){ //we create a function that sets current album to pi
     //end conditional statement
   });
 
-    for(var i = 0; i < songRows.length; i++){
-        songRows[i].addEventListener('mouseleave', function(event){
-          //revert the content back to the number
-          //this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
-
-          // cached song item that we're leaving in a variable (checkpoint 13)
+  for (var i = 0; i < songRows.length; i++) {
+      songRows[i].addEventListener('mouseleave', function(event) {
+          // #1
           var songItem = getSongItem(event.target);
           var songItemNumber = songItem.getAttribute('data-song-number');
-          // end caching song item
 
-          //conditional that checks that the item the mouse is leaving is not current song
+          // #2 conditional
           if (songItemNumber !== currentlyPlayingSong) {
               songItem.innerHTML = songItemNumber;
-          //end conditional (checkpoint 13)
           }
-        });
+      });
 
         songRows[i].addEventListener('click', function(event) {
           //Event Handler call checkpoint 13
