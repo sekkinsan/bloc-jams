@@ -42,43 +42,63 @@ function named revealPoint that:
 takes a single argument: the index of teh points class node element, and
 gets called in a for loop */
 
-var pointsArray = document.getElementsByClassName('point');
 
+//begin refactoring animatePoints jQuery checkpoint-16
+// we remove this DOM selector that gets .point since jQuery selection is terse enough
+
+/* var pointsArray = document.getElementsByClassName('point'); */
+var animatePoints = function() {
+
+/*
 var revealPoint = function(point) {
 point.style.opacity = 1;
 point.style.transform = "scaleX(1) translateY(0)";
 point.style.msTransform = "scaleX(1) translateY(0)";
 point.style.WebkitTransform = "scaleX(1) translateY(0)";
-}; /* revealPoint becomes the callback function in forEach */
+}; */
+
+//we use jQuery .css method to replace multiple style property instances
+  var revealPoint = function() {
+        $(this).css({
+          opacity: 1,
+          transform: 'scaleX(1) translateY(0)'
+        });
+      };
 
 /*
 for (var i = 0; i < points.length; i++) {
   revealPoint(i);
 } old for function replaced by forEach function */
 
+/*
 var animatePoints=function(points){
 
   forEach(points, revealPoint);
+}; */
+
+// we replace for loop with jQuery $.each() function which iterates over each .point element and executes callback function, revealPoint
+  $.each($('.point'), revealPoint);
 };
+//ADDITIONALLY: the revealPoint f(x) now refers to $(this) instead of a specific .point element, thus this was wrapped in a jQuery object $(this).
 
-window.onload = function() {
-  // Automatically animate the points on a tall screen where scrolling can't trigger the animation
-  if (window.innerHeight > 950) {
-    animatePoints(pointsArray);
-  }
-
-  var sellingPoints = document.getElementsByClassName('selling-points')[0];
-  var scrollDistance = sellingPoints.getBoundingClientRect().top - window.innerHeight + 200;
-
-  window.addEventListener('scroll', function(event) {
-    if (document.documentElement.scrollTop || document.body.scrollTop >= scrollDistance) {
-      animatePoints(pointsArray);
-    }
-  });
+//made window a jQuery object checkpoint 16
+$(window).load(function(){
+if ($(window).height() > 950) {
+  animatePoints();
 }
-/* window.onload property is assigned an event handler, a function that handles
-code in response to an event. The event handler executes as soon as an action
-fires an event.
-We can listen to all events, including scroll, on any DOM element. However, we
-wanted to listen specifically for when the user scrolled the ENTIRE page, so we
-attached it to the window object. */
+//updated .innerHeight property to jQuery's height() method which gets or sets an object's height
+
+var scrollDistance = $('.selling-points').offset().top - $(window).height() + 200;
+//replace getBoundingClientRect() with jQuery's .offset() method
+
+$(window).scroll(function(event){
+//addEventListener becomes jQuery's scroll() method, which takes function as an argument
+//scroll() method is still an event handler, but jQuery wrapper obscures appearance of events
+
+
+  if ($(window).scrollTop() >= scrollDistance) {
+    animatePoints();
+//we replace document.documentElement.scrollTop || document.body.scrollTop with jQuery equivalent
+        }
+    });
+});
