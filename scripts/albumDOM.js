@@ -58,25 +58,20 @@ var createSongRow = function(songNumber, songName, songLength){
     + '</tr>'
     ;
 
-    //return template; refactoring checkpoint-17
-    return $(template);
+    return template
 };
 
 /* #1  we select all HTML elements that are required to display on the album
 We want to populate these elements with information, so we assign the
-corresponding values of the album objects' properties to the HTML elements.
+corresponding values of the album objects' properties to the HTML elements. */
+
 var albumTitle = document.getElementsByClassName('album-view-title')[0];
 var albumArtist = document.getElementsByClassName('album-view-artist')[0];
 var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
-var albumSongList = document.getElementsByClassName('album-view-song-list')[0]; */
+var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
 
-//refactoring DOM selectors checkpoint-17
-var $albumTitle = $('.album-view-title');
-var $albumArtist = $('.album-view-artist');
-var $albumReleaseInfo = $('.album-view-release-info');
-var $albumImage = $('.album-cover-art');
-var $albumSongList = $('.album-view-song-list');
+
 var setCurrentAlbum = function(album) {
 
   /* #2
@@ -84,34 +79,24 @@ var setCurrentAlbum = function(album) {
   returns or sets the value of a node.
   Example .albumTitle element only has one node and it's text. When we use
   firstchild and nodevalue properties together on it, we set the value of that
-  text node to album.title
+  text node to album.title */
   albumTitle.firstChild.nodeValue = album.title;
   albumArtist.firstChild.nodeValue = album.artist;
   albumReleaseInfo.firstChild.nodeValue = album.year + ' ' + album.label;
-  albumImage.setAttribute('src', album.albumArtUrl); */
-  // refactoring checkpoint-17
-  $albumTitle.text(album.title);
-  $albumArtist.text(album.artist);
-  $albumReleaseInfo.text(album.year + ' ' + album.label);
-  $albumImage.attr('src', album.albumArtUrl);
-  //we use text() method to replace content of the text nodes
-  //we use attr() method which changes element attribute using the same arguments
+  albumImage.setAttribute('src', album.albumArtUrl);
 
 
   /* #3 we initially set the value of the parent container's innerHTML to an
-  empty string to ensure that we were working with a clean slate!
-  albumSongList.innerHTML = ''; */
-  //refactoring checkpoint-17
-  $albumSongList.empty();
+  empty string to ensure that we were working with a clean slate! */
+  albumSongList.innerHTML = '';
+
 
   /* #4 we use for loop to go through all the songs from the specified album
   object and insert them into the HTML using innerHTML. createSongRow function
   is called at each loop, passing in the information from our album object */
   for (var i = 0; i < album.songs.length; i++) {
-    //albumSongList.innerHTML += createSongRow(i+1, album.songs[i].title, album.songs[i].duration);
-    //refactoring checkpoint-17
-    var $newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
-    $albumSongList.append($newRow);
+    albumSongList.innerHTML += createSongRow(i+1, album.songs[i].title, album.songs[i].duration);
+
     }
 };
 
