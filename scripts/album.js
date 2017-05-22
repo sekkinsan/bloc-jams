@@ -117,7 +117,7 @@ var setCurrentAlbum = function(album) {
 
 var albums=[albumPicasso, albumMarconi, albumIU]; //create an array of the albums we want to loop for below event listener for easy access using array indices
 var index = 1;
-albumImage.addEventListener("click",function(event){ //click event on image which will trigger below function
+$albumImage.on("click",function(event){ //click event on image which will trigger below function
     setCurrentAlbum(albums[index]); //way to access the array
     index++; //each time you click it will go to the next array index
     if (index == albums.length) { //this is for when the third album is reached, when clicked it will reclick to first one.
