@@ -46,8 +46,6 @@ var albumIU = {
   ]
 }
 
-var currentlyPlayingSong = null;
-
 //Dynamically generating song row content
 var createSongRow = function(songNumber, songName, songLength){
   var template =
@@ -59,7 +57,53 @@ var createSongRow = function(songNumber, songName, songLength){
     ;
 
     //return template refactoring checkpoint-17
-    return $(template);
+    //return $(template); refactored to
+    var $row = $(template);
+
+    var clickHandler = function(){
+      var songNumber = $(this).attr('data-song-number')
+
+      if (currentlyPlayingSong !== null) {
+        // Revert to song number for currently plyaing song since user chose to play new song.
+        var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSong + '"]');
+        currentlyPlayingCell.html(currentlyPlayingSong);
+      }
+      if (currentlyPlayingSong !== songNumber){
+        //Switch from play to pause button to indicate new song is playing
+        $(this).html(pauseButtonTemplate);
+        currentlyPlayingSong = songNumber;
+      }
+      else if (currentlyPlayingSong === songNumber){
+        //Switch from pause to play button to pause currently playing song.
+        $(this).html(playButtonTemplate);
+        currentlyPlayingSong = null;
+      }
+    };
+//refactoring mouseover to onHover checkpoint-18
+    var onHover = function(event){
+      var songNumberCell = $(this).find('.song-item-number')
+      var songNumber = songNumberCell.attr('data-song-number')
+
+      if (songNumber !== currentlyPlayingSong){
+        songNumberCell.html(playButtonTemplate);
+      }
+    };
+
+//refactoring mouseleave to offHover checkpoint-18
+    var offHover = function(event){
+      var songNumberCell = $(this).find('.song-item-number')
+      var songNumber = songNumberCell.attr('data-song-number')
+
+      if (songNumber !== currentlyPlayingSong){
+        songNumberCell.html(songNumber);
+      }
+    };
+    //find() is similar to querySelector().
+    $row.find('.song-item-number').click(clickHandler);
+    //hover() combines mouseover and mouseleave functions relied on previously, first argument is callback when user mouses over, second is when mouse leaves row.
+    $row.hover(onHover, offHover);
+    //return $row, created with the event listeners attached.
+    return $row;
 };
 
 /* #1  we select all HTML elements that are required to display on the album
@@ -125,7 +169,6 @@ var index = 1;
       index = 0;
     }
 });*/
-//have to refactor to jQuery checkpoint-17
 
 $albumImage.on("click",function(event){
   setCurrentAlbum(albums[index]); //way to access the array
@@ -135,6 +178,7 @@ $albumImage.on("click",function(event){
 }
 });
 
+/* removing deprecated code since jQuery renders these unnecessary checkpoint-18
 //........Begin findParentByClassName function (Checkpoint 13)
 
 var findParentByClassName = function(element, targetClass) {
@@ -198,45 +242,27 @@ var clickHandler = function(targetElement) {
    }
 
 };
+*/
 
-
+/* createSongRow replace below functionality.
 var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
 var songRows = document.getElementsByClassName('album-view-song-item');
+*/
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>'
 var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>'
 
-window.onload = function(){ //we create a function that sets current album to picasso
+var currentlyPlayingSong = null;
+
+//window.onload = function(){ we create a function that sets current album to picasso
+$(document).ready(function() {
   setCurrentAlbum(albumPicasso);
+});
 
-  songListContainer.addEventListener('mouseover', function(event){
-    if(event.target.parentElement.className === 'album-view-song-item'){
-      //change the content from the number to the play button's HTML
-      //event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
-    //conditional statement that only changes innerHTML of table cell when element does not belong to the currently playing song (checkpoint 13)
-    var songItem = getSongItem(event.target);
 
-    if (songItem.getAttribute('data-song-number') !== currentlyPlayingSong) {
-      songItem.innerHTML = playButtonTemplate
-    }
-  }
-    //end conditional statement
-  });
-
+/* don't need click event listener
   for (var i = 0; i < songRows.length; i++) {
-      songRows[i].addEventListener('mouseleave', function(event) {
-          // #1
-          var songItem = getSongItem(event.target);
-          var songItemNumber = songItem.getAttribute('data-song-number');
-
-          // #2 conditional
-          if (songItemNumber !== currentlyPlayingSong) {
-              songItem.innerHTML = songItemNumber;
-          }
-      });
-
         songRows[i].addEventListener('click', function(event) {
           //Event Handler call checkpoint 13
           clickHandler(event.target);
         });
-    }
-};
+    } */
