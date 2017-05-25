@@ -1,3 +1,12 @@
+var setSong = function(songNumber) {
+    currentlyPlayingSongNumber = parseInt(songNumber); // convert songNumber to integer
+    currentSongFromAlbum = currentAlbum.songs[songNumber - 1]; // to get proper value of songNumber in index
+};
+
+var getSongNumberCell = function(number){
+  return $('.song-item-number[data-song-number="' + number + '"]');
+}
+
 //Dynamically generating song row content
 var createSongRow = function(songNumber, songName, songLength){
   var template =
@@ -13,18 +22,18 @@ var createSongRow = function(songNumber, songName, songLength){
     var $row = $(template);
 
     var clickHandler = function(){
-      var songNumber = $(this).attr('data-song-number');
+      var songNumber = parseInt($(this).attr('data-song-number'));
 
       if (currentlyPlayingSongNumber !== null) {
         // Revert to song number for currently plyaing song since user chose to play new song.
-        var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+        var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
         currentlyPlayingCell.html(currentlyPlayingSongNumber);
       }
       if (currentlyPlayingSongNumber !== songNumber){
         //Switch from play to pause button to indicate new song is playing
         $(this).html(pauseButtonTemplate);
-        currentlyPlayingSongNumber = songNumber;
-        currentSongFromAlbum = currentAlbum.songs[songNumber-1];
+        setSong(songNumber);
+
         updatePlayerBarSong();
       }
       else if (currentlyPlayingSongNumber === songNumber){
@@ -32,14 +41,13 @@ var createSongRow = function(songNumber, songName, songLength){
         $(this).html(playButtonTemplate);
         //revers HTML of elemnt to playerBarPlayButton when song is paused
         $('.main-controls .play-pause').html(playerBarPlayButton);
-        currentlyPlayingSongNumber = null;
-        currentSongFromAlbum = null;
+        setSong(null);
       }
     };
 //refactoring mouseover to onHover checkpoint-18
     var onHover = function(event){
       var songNumberCell = $(this).find('.song-item-number')
-      var songNumber = (songNumberCell.attr('data-song-number'));
+      var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 
       if (songNumber !== currentlyPlayingSongNumber){
         songNumberCell.html(playButtonTemplate);
@@ -49,7 +57,7 @@ var createSongRow = function(songNumber, songName, songLength){
 //refactoring mouseleave to offHover checkpoint-18
     var offHover = function(event){
       var songNumberCell = $(this).find('.song-item-number')
-      var songNumber = (songNumberCell.attr('data-song-number'));
+      var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 
       if (songNumber !== currentlyPlayingSongNumber){
         songNumberCell.html(songNumber);
@@ -137,14 +145,14 @@ var nextSong = function() {
     var lastSongNumber = currentlyPlayingSongNumber;
 
     // Set a new current song
-    currentlyPlayingSongNumber = currentSongIndex + 1;
-    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+    setSong(currentSongIndex + 1);
+
 
     // Update the Player Bar information
     updatePlayerBarSong();
 
-    var $nextSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
-    var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
+    var $nextSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
 
     $nextSongNumberCell.html(pauseButtonTemplate);
     $lastSongNumberCell.html(lastSongNumber);
@@ -164,16 +172,16 @@ var previousSong = function() {
     var lastSongNumber = currentlyPlayingSongNumber;
 
     // Set a new current song
-    currentlyPlayingSongNumber = currentSongIndex + 1;
-    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+    setSong(currentSongIndex + 1);
+
 
     // Update the Player Bar information
     updatePlayerBarSong();
 
     $('.main-controls .play-pause').html(playerBarPauseButton);
 
-    var $previousSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
-    var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
+    var $previousSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
 
     $previousSongNumberCell.html(pauseButtonTemplate);
     $lastSongNumberCell.html(lastSongNumber);
@@ -210,7 +218,6 @@ $albumImage.on("click",function(event){
 
 /* removing deprecated code since jQuery renders these unnecessary checkpoint-18
 //........Begin findParentByClassName function (Checkpoint 13)
-
 var findParentByClassName = function(element, targetClass) {
   if (element) {
     var currentParent = element.parentElement;
@@ -227,11 +234,8 @@ var findParentByClassName = function(element, targetClass) {
     console.log("No parent found with className?")
   }
 };
-
 //...........End findParentByClassName function (checkpoint 13)
-
 //............Begin getSongItem function (checkpoint 13)
-
 var getSongItem = function(element){
   switch (element.className) {
     case 'album-song-button':
@@ -249,15 +253,10 @@ var getSongItem = function(element){
       return;
   }
 };
-
 //..............End getSongItem function (checkpoint 13)
-
 //..........Adding a clickHandler function (checkpoint 13)
-
 var clickHandler = function(targetElement) {
-
      var songItem = getSongItem(targetElement);
-
      if (currentlyPlayingSong === null) {
          songItem.innerHTML = pauseButtonTemplate;
          currentlyPlayingSong = songItem.getAttribute('data-song-number');
@@ -270,7 +269,6 @@ var clickHandler = function(targetElement) {
        songItem.innerHTML = pauseButtonTemplate;
        currentlyPlayingSong = songItem.getAttribute('data-song-number');
    }
-
 };
 */
 
