@@ -1,12 +1,3 @@
-var setSong = function(songNumber) {
-    currentlyPlayingSongNumber = parseInt(songNumber); // convert songNumber to integer
-    currentSongFromAlbum = currentAlbum.songs[songNumber - 1]; // to get proper value of songNumber in index
-};
-
-var getSongNumberCell = function(number){
-  return $('.song-item-number[data-song-number="' + number + '"]');
-}
-
 //Dynamically generating song row content
 var createSongRow = function(songNumber, songName, songLength){
   var template =
@@ -26,14 +17,14 @@ var createSongRow = function(songNumber, songName, songLength){
 
       if (currentlyPlayingSongNumber !== null) {
         // Revert to song number for currently plyaing song since user chose to play new song.
-        var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+        var currentlyPlayingCell = parseInt($('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]'));
         currentlyPlayingCell.html(currentlyPlayingSongNumber);
       }
       if (currentlyPlayingSongNumber !== songNumber){
         //Switch from play to pause button to indicate new song is playing
         $(this).html(pauseButtonTemplate);
-        setSong(songNumber);
-
+        currentlyPlayingSongNumber = songNumber;
+        currentSongFromAlbum = currentAlbum.songs[songNumber-1];
         updatePlayerBarSong();
       }
       else if (currentlyPlayingSongNumber === songNumber){
@@ -41,7 +32,8 @@ var createSongRow = function(songNumber, songName, songLength){
         $(this).html(playButtonTemplate);
         //revers HTML of elemnt to playerBarPlayButton when song is paused
         $('.main-controls .play-pause').html(playerBarPlayButton);
-        setSong(null);
+        currentlyPlayingSongNumber = null;
+        currentSongFromAlbum = null;
       }
     };
 //refactoring mouseover to onHover checkpoint-18
@@ -145,14 +137,14 @@ var nextSong = function() {
     var lastSongNumber = currentlyPlayingSongNumber;
 
     // Set a new current song
-    setSong(currentSongIndex + 1);
-
+    currentlyPlayingSongNumber = currentSongIndex + 1;
+    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
     // Update the Player Bar information
     updatePlayerBarSong();
 
-    var $nextSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
-    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
+    var $nextSongNumberCell = parseInt($('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]'));
+    var $lastSongNumberCell = parseInt($('.song-item-number[data-song-number="' + lastSongNumber + '"]'));
 
     $nextSongNumberCell.html(pauseButtonTemplate);
     $lastSongNumberCell.html(lastSongNumber);
@@ -172,16 +164,16 @@ var previousSong = function() {
     var lastSongNumber = currentlyPlayingSongNumber;
 
     // Set a new current song
-    setSong(currentSongIndex + 1);
-
+    currentlyPlayingSongNumber = currentSongIndex + 1;
+    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
     // Update the Player Bar information
     updatePlayerBarSong();
 
     $('.main-controls .play-pause').html(playerBarPauseButton);
 
-    var $previousSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
-    var $lastSongNumberCell = getSongNumberCell(lastSongNumber);
+    var $previousSongNumberCell = parseInt($('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]'));
+    var $lastSongNumberCell = parseInt($('.song-item-number[data-song-number="' + lastSongNumber + '"]'));
 
     $previousSongNumberCell.html(pauseButtonTemplate);
     $lastSongNumberCell.html(lastSongNumber);
@@ -218,6 +210,7 @@ $albumImage.on("click",function(event){
 
 /* removing deprecated code since jQuery renders these unnecessary checkpoint-18
 //........Begin findParentByClassName function (Checkpoint 13)
+
 var findParentByClassName = function(element, targetClass) {
   if (element) {
     var currentParent = element.parentElement;
@@ -234,8 +227,11 @@ var findParentByClassName = function(element, targetClass) {
     console.log("No parent found with className?")
   }
 };
+
 //...........End findParentByClassName function (checkpoint 13)
+
 //............Begin getSongItem function (checkpoint 13)
+
 var getSongItem = function(element){
   switch (element.className) {
     case 'album-song-button':
@@ -253,10 +249,15 @@ var getSongItem = function(element){
       return;
   }
 };
+
 //..............End getSongItem function (checkpoint 13)
+
 //..........Adding a clickHandler function (checkpoint 13)
+
 var clickHandler = function(targetElement) {
+
      var songItem = getSongItem(targetElement);
+
      if (currentlyPlayingSong === null) {
          songItem.innerHTML = pauseButtonTemplate;
          currentlyPlayingSong = songItem.getAttribute('data-song-number');
@@ -269,6 +270,7 @@ var clickHandler = function(targetElement) {
        songItem.innerHTML = pauseButtonTemplate;
        currentlyPlayingSong = songItem.getAttribute('data-song-number');
    }
+
 };
 */
 
