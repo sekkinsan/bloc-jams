@@ -37,7 +37,7 @@ var createSongRow = function(songNumber, songName, songLength){
       '<tr class = "album-view-song-item">'
     + '   <td class="song-item-number" data-song-number = "' + songNumber + '">' + songNumber + '</td>'
     + '   <td class="song-item-title">' + songName + '</td>'
-    + '   <td class="song-item-duration">' + songLength + '</td>'
+    + '   <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
     + '</tr>'
     ;
 
@@ -163,17 +163,34 @@ var setCurrentAlbum = function(album) {
     }
 };
 
+var filterTimeCode = function(timeInSeconds){
+  var numCurrent = parseFloat($('.seek-control .current-time'));
+  var numTotal = parseFloat($('.seek-control .total-time'));
+  var timeInSeconds = Math.floor(timeInSeconds);
+  var timeStr = '';
+  var minutes = 0;
+  while (timeInSeconds >= 60) {
+      minutes++;
+      timeInSeconds -= 60;
+  } if (timeInSeconds <10) {
+    timeStr = minutes + ':0' + timeInSeconds;
+  } else {
+    timeStr = minutes + ':' + timeInSeconds;
+  }
+  return timeStr;
+};
+
 var setCurrentTimeInPlayerBar = function($currentTime){
   if (currentSoundFile){
     var $currentTime = $('.seek-control .current-time');
-    $currentTime.text(currentSoundFile.getTime());
+    $currentTime.text(filterTimeCode(currentSoundFile.getTime()));
   }
 };
 
 var setTotalTimeInPlayerBar = function($totalTime){
   if (currentSoundFile) {
     var $totalTime = $('.seek-control .total-time');
-    $totalTime.text(currentSoundFile.getDuration());;
+    $totalTime.text(filterTimeCode(currentSoundFile.getDuration()));;
   }
 };
 

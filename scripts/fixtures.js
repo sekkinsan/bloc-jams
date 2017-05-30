@@ -38,10 +38,10 @@ var albumIU = {
   year: '2017',
   albumArtUrl: 'assets/images/album_covers/11.png',
   songs: [
-    { title: 'Right Now', duration: '4:25'},
-    { title: 'Palette', duration: '3:32'},
-    { title: 'This Ending', duration: '4:08'},
-    { title: 'Good Love', duration: '3:15'},
-    { title: 'Jam Jam', duration: '2:54'}
+    { title: 'Black Out', duration: '3:48'},
+    { title: 'Palette', duration: '3:37'},
+    { title: 'dlwlrma', duration: '2:56'},
+    { title: 'Ending Scene', duration: '4:09'},
+    { title: 'Through The Night', duration: '4:13'}
   ]
 };
